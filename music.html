@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Macrohard Studio - 首页</title>
+    <title>音乐作品 - Macrohard Studio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -17,9 +17,9 @@
                     <span>Macrohard Studios</span>
                 </div>
                 <ul class="nav-links">
-                    <li><a href="index.html" class="active">首页</a></li>
+                    <li><a href="index.html">首页</a></li>
                     <li><a href="software.html">软件</a></li>
-                    <li><a href="music.html">音乐</a></li>
+                    <li><a href="music.html" class="active">音乐</a></li>
                     <li><a href="reserved1.html">预留1</a></li>
                     <li><a href="reserved2.html">预留2</a></li>
                     <li><a href="reserved3.html">预留3</a></li>
@@ -35,46 +35,65 @@
         </div>
     </header>
 
-    <!-- 首页/英雄区域 -->
-    <section id="home" class="hero">
+    <!-- 页面标题 -->
+    <section class="hero">
         <div class="container">
-            <h1>Macrohard Studios</h1>
-            <p>没人看的小站，用于展示GitHub作品与其他内容</p>
-            <a href="software.html" class="btn">开始探索</a>
+            <h1>音乐作品</h1>
+            <p>探索我们的音乐创作和声音设计</p>
         </div>
     </section>
 
-    <!-- 快速预览 -->
-    <section class="preview">
+    <!-- 音乐板块 -->
+    <section class="music">
         <div class="container">
             <div class="section-title">
-                <h2>项目预览</h2>
+                <h2>音乐专辑</h2>
             </div>
-            <div class="software-grid">
-                <div class="software-card">
-                    <div class="software-icon">
-                        <i class="fas fa-gamepad"></i>
+            <div class="music-grid">
+                <div class="music-card">
+                    <div class="music-image">
+                        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="音乐专辑">
                     </div>
-                    <h3>AORE</h3>
-                    <p>Awesome OpenGL Render Engine：自主研发的游戏引擎</p>
-                    <a href="software.html" class="btn" style="margin-top: 1rem;">查看源码</a>
+                    <div class="music-info">
+                        <h3>数字梦境</h3>
+                        <p>电子音乐专辑，融合未来感与情感表达。</p>
+                        <div class="music-player">
+                            <span>03:45</span>
+                            <button class="play-btn">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="software-card">
-                    <div class="software-icon">
-                        <i class="fas fa-random"></i>
+                <div class="music-card">
+                    <div class="music-image">
+                        <img src="https://images.unsplash.com/photo-1571974599782-87624638275f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="音乐专辑">
                     </div>
-                    <h3>RCP3</h3>
-                    <p>Random Choice Plus Ⅲ：强大的随机点名软件</p>
-                    <a href="https://github.com/Macrohard0001-m01/Random_Choice_Plus_3" class="btn" style="margin-top: 1rem;">查看源码</a>
-                    <a href="https://github.com/Macrohard0001-m01/Random_Choice_Plus_3/releases/latest" class="btn" style="margin-top: 1rem;">软件下载</a>
+                    <div class="music-info">
+                        <h3>代码旋律</h3>
+                        <p>编程灵感启发的器乐作品集。</p>
+                        <div class="music-player">
+                            <span>04:20</span>
+                            <button class="play-btn">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="software-card">
-                    <div class="software-icon">
-                        <i class="fas fa-music"></i>
+                <div class="music-card">
+                    <div class="music-image">
+                        <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="音乐专辑">
                     </div>
-                    <h3>音乐</h3>
-                    <p>预留</p>
-                    <a href="music.html" class="btn" style="margin-top: 1rem;">音乐下载</a>
+                    <div class="music-info">
+                        <h3>深夜编码</h3>
+                        <p>适合深夜工作与思考的放松音乐。</p>
+                        <div class="music-player">
+                            <span>05:15</span>
+                            <button class="play-btn">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -108,8 +127,8 @@
                         <ul>
                             <li><a href="software.html">AORE</a></li>
                             <li><a href="software.html">RCP3</a></li>
-                            <li><a href="software.html">音乐</a></li>
-                            <li><a href="music.html">预留</a></li>
+                            <li><a href="software.html">预留</a></li>
+                            <li><a href="music.html">音乐</a></li>
                         </ul>
                     </div>
                     
@@ -130,37 +149,6 @@
         </div>
     </footer>
 
-    <script>
-        // 移动端菜单切换
-        document.querySelector('.hamburger').addEventListener('click', function() {
-            document.querySelector('.nav-links').classList.toggle('active');
-        });
-
-        // 点击外部区域关闭移动端菜单
-        document.addEventListener('click', function(e) {
-            const nav = document.querySelector('.nav-links');
-            const hamburger = document.querySelector('.hamburger');
-            
-            if (!nav.contains(e.target) && !hamburger.contains(e.target) && nav.classList.contains('active')) {
-                nav.classList.remove('active');
-            }
-        });
-
-        // 滚动时添加动画效果
-        window.addEventListener('scroll', function() {
-            const sections = document.querySelectorAll('section');
-            const windowHeight = window.innerHeight;
-            
-            sections.forEach(section => {
-                const sectionTop = section.getBoundingClientRect().top;
-                if(sectionTop < windowHeight * 0.85) {
-                    section.classList.add('fade-in');
-                }
-            });
-        });
-
-        // 初始化 - 触发一次滚动事件以显示初始可见部分
-        window.dispatchEvent(new Event('scroll'));
-    </script>
+    <script src="js/main.js"></script>
 </body>
 </html>

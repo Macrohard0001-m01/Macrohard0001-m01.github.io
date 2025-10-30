@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Macrohard Studio - 首页</title>
+    <title>软件作品 - Macrohard Studio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -17,8 +17,8 @@
                     <span>Macrohard Studios</span>
                 </div>
                 <ul class="nav-links">
-                    <li><a href="index.html" class="active">首页</a></li>
-                    <li><a href="software.html">软件</a></li>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="software.html" class="active">软件</a></li>
                     <li><a href="music.html">音乐</a></li>
                     <li><a href="reserved1.html">预留1</a></li>
                     <li><a href="reserved2.html">预留2</a></li>
@@ -35,46 +35,41 @@
         </div>
     </header>
 
-    <!-- 首页/英雄区域 -->
-    <section id="home" class="hero">
+    <!-- 页面标题 -->
+    <section class="hero">
         <div class="container">
-            <h1>Macrohard Studios</h1>
-            <p>没人看的小站，用于展示GitHub作品与其他内容</p>
-            <a href="software.html" class="btn">开始探索</a>
+            <h1>软件作品</h1>
+            <p>展示我们的编程项目和软件解决方案</p>
         </div>
     </section>
 
-    <!-- 快速预览 -->
-    <section class="preview">
+    <!-- 软件板块 -->
+    <section class="software">
         <div class="container">
-            <div class="section-title">
-                <h2>项目预览</h2>
-            </div>
             <div class="software-grid">
                 <div class="software-card">
                     <div class="software-icon">
                         <i class="fas fa-gamepad"></i>
                     </div>
                     <h3>AORE</h3>
-                    <p>Awesome OpenGL Render Engine：自主研发的游戏引擎</p>
-                    <a href="software.html" class="btn" style="margin-top: 1rem;">查看源码</a>
+                    <p>Awesome OpenGL Render Engine：自主研发的游戏引擎，提供流畅的用户体验、强大的性能，且易于编辑和上手。</p>
+                    <a href="#" class="btn" style="margin-top: 1rem;">源码</a>
                 </div>
                 <div class="software-card">
                     <div class="software-icon">
                         <i class="fas fa-random"></i>
                     </div>
                     <h3>RCP3</h3>
-                    <p>Random Choice Plus Ⅲ：强大的随机点名软件</p>
-                    <a href="https://github.com/Macrohard0001-m01/Random_Choice_Plus_3" class="btn" style="margin-top: 1rem;">查看源码</a>
-                    <a href="https://github.com/Macrohard0001-m01/Random_Choice_Plus_3/releases/latest" class="btn" style="margin-top: 1rem;">软件下载</a>
+                    <p>Random Choice Plus Ⅲ：一款强大的随机点名软件（仍在开发），专为教育场景设计。</p>
+                    <a href="#" class="btn" style="margin-top: 1rem;">软件下载</a>
                 </div>
                 <div class="software-card">
                     <div class="software-icon">
-                        <i class="fas fa-music"></i>
+                        <i class="fab fa-python"></i>
                     </div>
-                    <h3>音乐</h3>
-                    <p>预留</p>
-                    <a href="music.html" class="btn" style="margin-top: 1rem;">音乐下载</a>
+                    <h3>Python项目</h3>
+                    <p>使用Python开发的各种工具和应用程序，涵盖数据处理、自动化等方向。</p>
+                    <a href="#" class="btn" style="margin-top: 1rem;">查看项目</a>
                 </div>
             </div>
         </div>
@@ -108,8 +103,8 @@
                         <ul>
                             <li><a href="software.html">AORE</a></li>
                             <li><a href="software.html">RCP3</a></li>
-                            <li><a href="software.html">音乐</a></li>
-                            <li><a href="music.html">预留</a></li>
+                            <li><a href="software.html">预留</a></li>
+                            <li><a href="music.html">音乐</a></li>
                         </ul>
                     </div>
                     
@@ -130,37 +125,6 @@
         </div>
     </footer>
 
-    <script>
-        // 移动端菜单切换
-        document.querySelector('.hamburger').addEventListener('click', function() {
-            document.querySelector('.nav-links').classList.toggle('active');
-        });
-
-        // 点击外部区域关闭移动端菜单
-        document.addEventListener('click', function(e) {
-            const nav = document.querySelector('.nav-links');
-            const hamburger = document.querySelector('.hamburger');
-            
-            if (!nav.contains(e.target) && !hamburger.contains(e.target) && nav.classList.contains('active')) {
-                nav.classList.remove('active');
-            }
-        });
-
-        // 滚动时添加动画效果
-        window.addEventListener('scroll', function() {
-            const sections = document.querySelectorAll('section');
-            const windowHeight = window.innerHeight;
-            
-            sections.forEach(section => {
-                const sectionTop = section.getBoundingClientRect().top;
-                if(sectionTop < windowHeight * 0.85) {
-                    section.classList.add('fade-in');
-                }
-            });
-        });
-
-        // 初始化 - 触发一次滚动事件以显示初始可见部分
-        window.dispatchEvent(new Event('scroll'));
-    </script>
+    <script src="js/main.js"></script>
 </body>
 </html>
