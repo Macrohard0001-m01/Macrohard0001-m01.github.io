@@ -13,7 +13,8 @@
         <div class="container">
             <nav class="navbar">
                 <div class="logo">
-                    <i class="fas fa-code"></i>
+                    <img src="images/macrohard_icon_day.png" alt="Logo" class="logo-icon day">
+                    <img src="images/macrohard_icon_night.png" alt="Logo" class="logo-icon night">
                     <span>Macrohard Studio</span>
                 </div>
                 <ul class="nav-links">
@@ -28,8 +29,13 @@
                     <li><a href="sentiment.html">情怀与初衷</a></li>
                     <li><a href="about.html">关于</a></li>
                 </ul>
-                <div class="hamburger">
-                    <i class="fas fa-bars"></i>
+                <div class="nav-right">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="hamburger">
+                        <i class="fas fa-bars"></i>
+                    </div>
                 </div>
             </nav>
         </div>
@@ -53,15 +59,15 @@
             <div class="software-grid">
                 <div class="software-card">
                     <div class="software-icon">
-                        <i class="fas fa-gamepad"></i>
+                        <i class="fas fa-laptop-code"></i>
                     </div>
                     <h3>软件</h3>
-                    <p>Python开源项目</p>
+                    <p>Python开源项目，包括游戏引擎、教育软件等</p>
                     <a href="software.html" class="btn" style="margin-top: 1rem;">详细信息</a>
                 </div>
                 <div class="software-card">
                     <div class="software-icon">
-                        <i class="fas fa-random"></i>
+                        <i class="fas fa-headphones"></i>
                     </div>
                     <h3>音乐</h3>
                     <p>提供lx音源、音乐下载等服务</p>
@@ -69,11 +75,11 @@
                 </div>
                 <div class="software-card">
                     <div class="software-icon">
-                        <i class="fas fa-music"></i>
+                        <i class="fas fa-lightbulb"></i>
                     </div>
-                    <h3>预留</h3>
-                    <p>预留</p>
-                    <a href="music.html" class="btn" style="margin-top: 1rem;"></a>
+                    <h3>更多创意</h3>
+                    <p>探索我们的其他项目和创意想法</p>
+                    <a href="reserved1.html" class="btn" style="margin-top: 1rem;">发现更多</a>
                 </div>
             </div>
         </div>
@@ -86,9 +92,9 @@
                 <div class="footer-column">
                     <div class="footer-logo">
                         <i class="fas fa-code"></i>
-                        Macrohard Studios
+                        Macrohard Studio
                     </div>
-                    <p>Macrohard_Studio</p>
+                    <p>高中生的小站</p>
                 </div>
                 
                 <div class="footer-links">
@@ -96,9 +102,9 @@
                         <h3>快速链接</h3>
                         <ul>
                             <li><a href="index.html">首页</a></li>
-                            <li><a href="https://github.com">Github</a></li>
-                            <li><a href="https://chat.deepseek.com/">deepseek</a></li>
-                            <li><a href="https://docs.lxmusic.top/">LX_Music</a></li>
+                            <li><a href="https://github.com/Macrohard0001-m01" target="_blank">GitHub</a></li>
+                            <li><a href="https://chat.deepseek.com/" target="_blank">DeepSeek</a></li>
+                            <li><a href="https://docs.lxmusic.top/" target="_blank">LX Music</a></li>
                         </ul>
                     </div>
                     
@@ -107,8 +113,8 @@
                         <ul>
                             <li><a href="software.html">AORE</a></li>
                             <li><a href="software.html">RCP3</a></li>
-                            <li><a href="software.html">预留</a></li>
-                            <li><a href="music.html">预留</a></li>
+                            <li><a href="music.html">音乐资源</a></li>
+                            <li><a href="music.html">音源下载</a></li>
                         </ul>
                     </div>
                     
@@ -124,42 +130,11 @@
             </div>
             
             <div class="copyright">
-                <p>&copy; 2025-2026 Macrohard Studios. 保留所有权利。 | 网站正在编写与测试，勿喷，勿催</p>
+                <p>&copy; 2025-2026 Macrohard Studio. 保留所有权利。 | 网站正在编写与测试，勿喷，勿催</p>
             </div>
         </div>
     </footer>
 
-    <script>
-        // 移动端菜单切换
-        document.querySelector('.hamburger').addEventListener('click', function() {
-            document.querySelector('.nav-links').classList.toggle('active');
-        });
-
-        // 点击外部区域关闭移动端菜单
-        document.addEventListener('click', function(e) {
-            const nav = document.querySelector('.nav-links');
-            const hamburger = document.querySelector('.hamburger');
-            
-            if (!nav.contains(e.target) && !hamburger.contains(e.target) && nav.classList.contains('active')) {
-                nav.classList.remove('active');
-            }
-        });
-
-        // 滚动时添加动画效果
-        window.addEventListener('scroll', function() {
-            const sections = document.querySelectorAll('section');
-            const windowHeight = window.innerHeight;
-            
-            sections.forEach(section => {
-                const sectionTop = section.getBoundingClientRect().top;
-                if(sectionTop < windowHeight * 0.85) {
-                    section.classList.add('fade-in');
-                }
-            });
-        });
-
-        // 初始化 - 触发一次滚动事件以显示初始可见部分
-        window.dispatchEvent(new Event('scroll'));
-    </script>
+    <script src="js/main.js"></script>
 </body>
 </html>
