@@ -71,7 +71,7 @@ header {
     color: var(--text-light);
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.3s;
+    transition: color 0.3;
     font-size: 0.95rem;
 }
 
@@ -101,14 +101,14 @@ header {
 .hero h1 {
     font-size: 3.5rem;
     margin-bottom: 1rem;
-    animation: fadeIn 1s ease;
+    animation: fadeIn 1 ease;
 }
 
 .hero p {
     font-size: 1.2rem;
     max-width: 700px;
     margin: 0 auto 2rem;
-    animation: fadeIn 1.5s ease;
+    animation: fadeIn 1.5 ease;
 }
 
 .btn {
@@ -119,7 +119,7 @@ header {
     border-radius: 30px;
     text-decoration: none;
     font-weight: 600;
-    transition: all 0.3s ease;
+    transition: all 0.3 ease;
     border: none;
     cursor: pointer;
 }
@@ -175,7 +175,7 @@ section {
     border-radius: 10px;
     padding: 2rem;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3 ease, box-shadow 0.3 ease;
     text-align: center;
 }
 
@@ -208,7 +208,7 @@ section {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease;
+    transition: transform 0.3 ease;
 }
 
 .music-card:hover {
@@ -224,7 +224,7 @@ section {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.5s ease;
+    transition: transform 0.5 ease;
 }
 
 .music-card:hover .music-image img {
@@ -258,7 +258,7 @@ section {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3;
 }
 
 .play-btn:hover {
@@ -282,7 +282,7 @@ section {
     padding: 2rem;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     text-align: center;
-    transition: transform 0.3s ease;
+    transition: transform 0.3 ease;
 }
 
 .reserved-card:hover {
@@ -323,7 +323,7 @@ section {
     width: 100%;
     height: auto;
     display: block;
-    transition: transform 0.5s ease;
+    transition: transform 0.5 ease;
 }
 
 .sentiment-image:hover img {
@@ -352,7 +352,7 @@ section {
     width: 100%;
     height: auto;
     display: block;
-    transition: transform 0.5s ease;
+    transition: transform 0.5 ease;
 }
 
 .about-image:hover img {
@@ -411,7 +411,7 @@ footer {
 .footer-column a {
     color: #bdc3c7;
     text-decoration: none;
-    transition: color 0.3s;
+    transition: color 0.3;
 }
 
 .footer-column a:hover {
@@ -433,7 +433,7 @@ footer {
     border-radius: 50%;
     background-color: rgba(255, 255, 255, 0.1);
     color: white;
-    transition: all 0.3s ease;
+    transition: all 0.3 ease;
 }
 
 .social-links a:hover {
@@ -462,7 +462,7 @@ footer {
 }
 
 .fade-in {
-    animation: fadeIn 1s ease forwards;
+    animation: fadeIn 1 ease forwards;
 }
 
 /* 响应式设计 */
@@ -520,4 +520,61 @@ footer {
     .section-title h2 {
         font-size: 2rem;
     }
+}
+
+/* 深色模式变量 */
+[data-theme="dark"] {
+    --primary: #1a1a2e;
+    --secondary: #4a90e2;
+    --accent: #ff6b6b;
+    --light: #2d3748;
+    --dark: #1a202c;
+    --text: #e2e8f0;
+    --text-light: #f7fafc;
+    --background: #0f1419;
+}
+
+/* 主题切换按钮 */
+.theme-toggle {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-left: 1rem;
+    transition: color 0.3;
+}
+
+.theme-toggle:hover {
+    color: var(--secondary);
+}
+
+/* 自定义图标 */
+.logo-icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+    transition: opacity 0.3;
+}
+
+.logo-icon.day {
+    display: block;
+}
+
+.logo-icon.night {
+    display: none;
+}
+
+[data-theme="dark"] .logo-icon.day {
+    display: none;
+}
+
+[data-theme="dark"] .logo-icon.night {
+    display: block;
+}
+
+/* 深色模式下的body背景 */
+body {
+    background-color: var(--background);
+    transition: background-color 0.3, color 0.3;
 }
