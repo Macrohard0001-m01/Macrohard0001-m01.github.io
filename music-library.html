@@ -77,7 +77,7 @@
             color: var(--text-color);
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.3s;
+            transition: color 0.3;
         }
 
         .nav-links a:hover, .nav-links a.active {
@@ -167,7 +167,7 @@
             border-radius: 8px;
             margin-bottom: 8px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3;
             display: flex;
             align-items: center;
         }
@@ -196,7 +196,7 @@
             padding: 12px 15px;
             border-radius: 8px;
             margin-bottom: 8px;
-            transition: background-color 0.3s;
+            transition: background-color 0.3;
             cursor: pointer;
         }
 
@@ -239,7 +239,7 @@
             color: var(--text-color);
             cursor: pointer;
             font-size: 1rem;
-            transition: color 0.3s;
+            transition: color 0.3;
         }
 
         .btn:hover {
@@ -260,7 +260,7 @@
             padding: 10px 15px;
             border-radius: 8px;
             margin-bottom: 8px;
-            transition: background-color 0.3s;
+            transition: background-color 0.3;
         }
 
         .playlist-item:hover {
@@ -345,7 +345,7 @@
             color: var(--text-color);
             font-size: 1.2rem;
             cursor: pointer;
-            transition: color 0.3s;
+            transition: color 0.3;
         }
 
         .control-btn:hover {
@@ -363,7 +363,7 @@
             font-size: 1.5rem;
         }
 
-        /* 页脚 */
+        /* 页脚 - 与主站一致 */
         footer {
             background-color: var(--card-bg);
             padding: 40px 0 20px;
@@ -414,11 +414,18 @@
         .footer-column ul li a {
             color: var(--text-color);
             text-decoration: none;
-            transition: color 0.3s;
+            transition: color 0.3;
         }
 
         .footer-column ul li a:hover {
             color: var(--primary-color);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 70%;
         }
 
         .copyright {
@@ -429,6 +436,18 @@
             font-size: 0.9rem;
         }
 
+        /* 加载状态 */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #94a3b8;
+        }
+
+        .loading i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
         /* 响应式设计 */
         @media (max-width: 1024px) {
             .music-library {
@@ -437,6 +456,10 @@
             
             .folders-panel, .playlist-panel {
                 flex: 1;
+            }
+
+            .footer-links {
+                width: 100%;
             }
         }
 
@@ -452,6 +475,10 @@
             .hero p {
                 font-size: 1rem;
             }
+
+            .footer-links {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -461,16 +488,14 @@
         <div class="container">
             <nav class="navbar">
                 <div class="logo">
-                    <img src="images/macrohard_icon.png" alt="Logo" class="logo-icon">
-                    <span>Macrohard Studio</span>
+                    <img src="images/macrohard_icon_music.png" alt="Logo" class="logo-icon">
+                    <span>Macrohard Music</span>
                 </div>
                 <ul class="nav-links">
-                    <li><a href="index.html">首页</a></li>
-                    <li><a href="software.html">软件</a></li>
-                    <li><a href="music.html">音乐</a></li>
+                    <li><a href="index.html">返回首页</a></li>
+                    <li><a href="music.html">返回音乐</a></li>
                     <li><a href="music-library.html" class="active">在线曲库</a></li>
-                    <li><a href="sentiment.html">情怀与初衷</a></li>
-                    <li><a href="about.html">关于</a></li>
+                    <li><a href="about_music.html">关于</a></li>
                 </ul>
                 <div class="nav-right">
                     <button class="theme-toggle" id="themeToggle">
@@ -488,7 +513,7 @@
     <section class="hero">
         <div class="container">
             <h1>在线曲库</h1>
-            <p>个人收藏，有啥听啥 | 共收录 128 首歌曲</p>
+            <p>个人收藏，有啥听啥 | 从 /music/ 目录实时加载</p>
         </div>
     </section>
 
@@ -499,19 +524,22 @@
             <div class="folders-panel">
                 <div class="panel-title">
                     <span>音乐文件夹</span>
-                    <button class="btn" title="刷新">
+                    <button class="btn" title="刷新" id="refreshFolders">
                         <i class="fas fa-sync-alt"></i>
                     </button>
                 </div>
                 <ul class="folder-list" id="folderList">
-                    <!-- 文件夹将通过JavaScript动态生成 -->
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>加载文件夹中...</p>
+                    </div>
                 </ul>
             </div>
 
             <!-- 歌曲面板 -->
             <div class="songs-panel">
                 <div class="panel-title">
-                    <span id="currentFolder">所有歌曲</span>
+                    <span id="currentFolder">选择文件夹</span>
                     <div>
                         <button class="btn" title="播放全部" id="playAll">
                             <i class="fas fa-play-circle"></i>
@@ -522,7 +550,10 @@
                     </div>
                 </div>
                 <ul class="song-list" id="songList">
-                    <!-- 歌曲将通过JavaScript动态生成 -->
+                    <div class="loading">
+                        <i class="fas fa-music"></i>
+                        <p>请选择一个文件夹</p>
+                    </div>
                 </ul>
             </div>
 
@@ -540,7 +571,9 @@
                     </div>
                 </div>
                 <ul class="playlist-items" id="playlistItems">
-                    <!-- 播放列表项将通过JavaScript动态生成 -->
+                    <div class="loading">
+                        <p>播放列表为空</p>
+                    </div>
                 </ul>
                 <div class="playlist-info">
                     <p>共 <span id="playlistCount">0</span> 首歌曲</p>
@@ -585,7 +618,7 @@
         </div>
     </div>
 
-    <!-- 页脚 -->
+    <!-- 页脚 - 与主站一致 -->
     <footer>
         <div class="container">
             <div class="footer-content">
@@ -613,7 +646,7 @@
                         <ul>
                             <li><a href="software.html">AORE</a></li>
                             <li><a href="software.html">RCP3</a></li>
-                            <li><a href="#">预留</a></li>
+                            <li><a href="">预留</a></li>
                             <li><a href="">预留</a></li>
                         </ul>
                     </div>
@@ -636,27 +669,6 @@
     </footer>
 
     <script>
-        // 模拟音乐数据
-        const musicData = {
-            folders: [
-                { id: 1, name: "流行音乐", count: 42 },
-                { id: 2, name: "古典音乐", count: 28 },
-                { id: 3, name: "电子音乐", count: 35 },
-                { id: 4, name: "摇滚音乐", count: 23 }
-            ],
-            songs: [
-                { id: 1, folderId: 1, title: "夜曲", artist: "周杰伦", duration: "3:45", cover: "default" },
-                { id: 2, folderId: 1, title: "七里香", artist: "周杰伦", duration: "4:02", cover: "default" },
-                { id: 3, folderId: 1, title: "晴天", artist: "周杰伦", duration: "4:29", cover: "default" },
-                { id: 4, folderId: 2, title: "月光奏鸣曲", artist: "贝多芬", duration: "5:15", cover: "default" },
-                { id: 5, folderId: 2, title: "G小调赋格", artist: "巴赫", duration: "4:38", cover: "default" },
-                { id: 6, folderId: 3, title: "Faded", artist: "Alan Walker", duration: "3:32", cover: "default" },
-                { id: 7, folderId: 3, title: "Alone", artist: "Alan Walker", duration: "2:41", cover: "default" },
-                { id: 8, folderId: 4, title: "Sweet Child O' Mine", artist: "Guns N' Roses", duration: "5:56", cover: "default" },
-                { id: 9, folderId: 4, title: "Bohemian Rhapsody", artist: "Queen", duration: "5:55", cover: "default" }
-            ]
-        };
-
         // 状态管理
         let state = {
             currentFolder: null,
@@ -664,7 +676,12 @@
             isPlaying: false,
             playlist: [],
             currentTime: 0,
-            duration: 0
+            duration: 0,
+            audioElement: null,
+            musicData: {
+                folders: [],
+                songs: []
+            }
         };
 
         // DOM 元素
@@ -687,12 +704,17 @@
         const addAllToPlaylistBtn = document.getElementById('addAllToPlaylist');
         const clearPlaylistBtn = document.getElementById('clearPlaylist');
         const savePlaylistBtn = document.getElementById('savePlaylist');
+        const refreshFoldersBtn = document.getElementById('refreshFolders');
 
         // 初始化
-        function init() {
+        async function init() {
+            await loadMusicData();
             renderFolders();
-            renderSongs();
             updatePlaylistCount();
+            
+            // 创建音频元素
+            state.audioElement = new Audio();
+            setupAudioEvents();
             
             // 事件监听
             playPauseBtn.addEventListener('click', togglePlayPause);
@@ -702,10 +724,81 @@
             addAllToPlaylistBtn.addEventListener('click', addAllToPlaylist);
             clearPlaylistBtn.addEventListener('click', clearPlaylist);
             savePlaylistBtn.addEventListener('click', savePlaylist);
+            refreshFoldersBtn.addEventListener('click', refreshMusicData);
             progressBar.addEventListener('click', seek);
-            
-            // 模拟进度更新
-            setInterval(updateProgress, 1000);
+        }
+
+        // 从 /music/ 目录加载音乐数据
+        async function loadMusicData() {
+            try {
+                // 这里需要根据你的实际目录结构来调整
+                // 由于浏览器安全限制，我们无法直接读取服务器文件系统
+                // 这里提供两种方案：
+                
+                // 方案1: 使用预定义的目录结构（适用于GitHub Pages）
+                // 你需要在 /music/ 目录下创建对应的文件夹和音乐文件
+                const mockFolders = [
+                    { id: '001', name: "20251031更新上架", count:  },
+                    { id: '002', name: "其他音乐", count: 0 },
+                ];
+
+                const mockSongs = [
+                    { id: 1, folderId: 'pop', title: "夜曲", artist: "周杰伦", duration: "3:45", url: "/music/pop/song1.mp3" },
+                    { id: 2, folderId: 'pop', title: "七里香", artist: "周杰伦", duration: "4:02", url: "/music/pop/song2.mp3" },
+                    { id: 3, folderId: 'classical', title: "月光奏鸣曲", artist: "贝多芬", duration: "5:15", url: "/music/classical/song1.mp3" },
+                    { id: 4, folderId: 'electronic', title: "Faded", artist: "Alan Walker", duration: "3:32", url: "/music/electronic/song1.mp3" },
+                    { id: 5, folderId: 'rock', title: "Sweet Child O' Mine", artist: "Guns N' Roses", duration: "5:56", url: "/music/rock/song1.mp3" }
+                ];
+
+                state.musicData.folders = mockFolders;
+                state.musicData.songs = mockSongs;
+
+                // 方案2: 使用API获取真实目录结构（需要后端支持）
+                // 如果你有后端API，可以取消注释下面的代码
+                /*
+                const response = await fetch('/api/music-directory');
+                if (response.ok) {
+                    const data = await response.json();
+                    state.musicData = data;
+                } else {
+                    throw new Error('无法加载音乐目录');
+                }
+                */
+
+            } catch (error) {
+                console.error('加载音乐数据失败:', error);
+                // 显示错误信息
+                folderList.innerHTML = '<div class="loading"><p>加载失败，请刷新页面</p></div>';
+            }
+        }
+
+        // 刷新音乐数据
+        async function refreshMusicData() {
+            folderList.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i><p>刷新中...</p></div>';
+            await loadMusicData();
+            renderFolders();
+            if (state.currentFolder) {
+                renderSongs();
+            }
+        }
+
+        // 设置音频事件
+        function setupAudioEvents() {
+            state.audioElement.addEventListener('loadedmetadata', () => {
+                state.duration = state.audioElement.duration;
+                durationEl.textContent = formatTime(state.duration);
+            });
+
+            state.audioElement.addEventListener('timeupdate', () => {
+                state.currentTime = state.audioElement.currentTime;
+                const progressPercent = (state.currentTime / state.duration) * 100;
+                progress.style.width = `${progressPercent}%`;
+                currentTime.textContent = formatTime(state.currentTime);
+            });
+
+            state.audioElement.addEventListener('ended', () => {
+                playNext();
+            });
         }
 
         // 渲染文件夹
@@ -718,7 +811,7 @@
             allSongsItem.innerHTML = `
                 <i class="fas fa-folder-open folder-icon"></i>
                 <span>所有歌曲</span>
-                <span style="margin-left: auto; font-size: 0.8rem; color: #94a3b8;">${musicData.songs.length}</span>
+                <span style="margin-left: auto; font-size: 0.8rem; color: #94a3b8;">${state.musicData.songs.length}</span>
             `;
             allSongsItem.addEventListener('click', () => {
                 document.querySelectorAll('.folder-item').forEach(item => item.classList.remove('active'));
@@ -730,7 +823,7 @@
             folderList.appendChild(allSongsItem);
             
             // 添加各个文件夹
-            musicData.folders.forEach(folder => {
+            state.musicData.folders.forEach(folder => {
                 const folderItem = document.createElement('li');
                 folderItem.className = 'folder-item';
                 folderItem.innerHTML = `
@@ -754,8 +847,13 @@
             songList.innerHTML = '';
             
             let songsToShow = state.currentFolder 
-                ? musicData.songs.filter(song => song.folderId === state.currentFolder)
-                : musicData.songs;
+                ? state.musicData.songs.filter(song => song.folderId === state.currentFolder)
+                : state.musicData.songs;
+                
+            if (songsToShow.length === 0) {
+                songList.innerHTML = '<div class="loading"><p>该文件夹中没有歌曲</p></div>';
+                return;
+            }
                 
             songsToShow.forEach(song => {
                 const songItem = document.createElement('li');
@@ -801,13 +899,18 @@
 
         // 播放歌曲
         function playSong(songId) {
-            const song = musicData.songs.find(s => s.id === songId);
+            const song = state.musicData.songs.find( => .id === songId);
             if (!song) return;
             
             state.currentSong = song;
             state.isPlaying = true;
-            state.duration = parseTimeToSeconds(song.duration);
-            state.currentTime = 0;
+            
+            // 设置音频源
+            state.audioElement.src = song.url;
+            state.audioElement.play().catch(error => {
+                console.error('播放失败:', error);
+                alert('播放失败，请检查音乐文件路径');
+            });
             
             currentSongTitle.textContent = song.title;
             currentSongArtist.textContent = song.artist;
@@ -820,17 +923,15 @@
                     item.classList.add('playing');
                 }
             });
-            
-            updateProgress();
         }
 
         // 添加到播放列表
         function addToPlaylist(songId) {
-            const song = musicData.songs.find(s => s.id === songId);
+            const song = state.musicData.songs.find( => .id === songId);
             if (!song) return;
             
             // 检查是否已在播放列表中
-            if (state.playlist.some(s => s.id === songId)) {
+            if (state.playlist.some( => .id === songId)) {
                 alert('这首歌已经在播放列表中了！');
                 return;
             }
@@ -843,6 +944,11 @@
         // 渲染播放列表
         function renderPlaylist() {
             playlistItems.innerHTML = '';
+            
+            if (state.playlist.length === 0) {
+                playlistItems.innerHTML = '<div class="loading"><p>播放列表为空</p></div>';
+                return;
+            }
             
             state.playlist.forEach((song, index) => {
                 const playlistItem = document.createElement('li');
@@ -886,14 +992,20 @@
             if (!state.currentSong) {
                 if (state.playlist.length > 0) {
                     playSong(state.playlist[0].id);
-                } else if (musicData.songs.length > 0) {
-                    playSong(musicData.songs[0].id);
+                } else if (state.musicData.songs.length > 0) {
+                    playSong(state.musicData.songs[0].id);
                 }
                 return;
             }
             
+            if (state.isPlaying) {
+                state.audioElement.pause();
+                playPauseIcon.className = 'fas fa-play';
+            } else {
+                state.audioElement.play();
+                playPauseIcon.className = 'fas fa-pause';
+            }
             state.isPlaying = !state.isPlaying;
-            playPauseIcon.className = state.isPlaying ? 'fas fa-pause' : 'fas fa-play';
         }
 
         // 播放上一首
@@ -917,8 +1029,8 @@
         // 播放全部
         function playAll() {
             let songsToPlay = state.currentFolder 
-                ? musicData.songs.filter(song => song.folderId === state.currentFolder)
-                : musicData.songs;
+                ? state.musicData.songs.filter(song => song.folderId === state.currentFolder)
+                : state.musicData.songs;
                 
             if (songsToPlay.length === 0) return;
             
@@ -931,11 +1043,11 @@
         // 添加全部到播放列表
         function addAllToPlaylist() {
             let songsToAdd = state.currentFolder 
-                ? musicData.songs.filter(song => song.folderId === state.currentFolder)
-                : musicData.songs;
+                ? state.musicData.songs.filter(song => song.folderId === state.currentFolder)
+                : state.musicData.songs;
                 
             // 过滤掉已经在播放列表中的歌曲
-            songsToAdd = songsToAdd.filter(song => !state.playlist.some(s => s.id === song.id));
+            songsToAdd = songsToAdd.filter(song => !state.playlist.some( => .id === song.id));
             
             state.playlist.push(...songsToAdd);
             renderPlaylist();
@@ -975,43 +1087,13 @@
             alert('播放列表已保存到本地存储');
         }
 
-        // 更新进度条
-        function updateProgress() {
-            if (!state.currentSong || !state.isPlaying) return;
-            
-            if (state.currentTime < state.duration) {
-                state.currentTime += 1;
-            } else {
-                // 歌曲结束，播放下一首
-                playNext();
-                return;
-            }
-            
-            const progressPercent = (state.currentTime / state.duration) * 100;
-            progress.style.width = `${progressPercent}%`;
-            
-            currentTime.textContent = formatTime(state.currentTime);
-            durationEl.textContent = formatTime(state.duration);
-        }
-
         // 跳转进度
         function seek(e) {
-            if (!state.currentSong) return;
+            if (!state.currentSong || !state.audioElement) return;
             
             const rect = progressBar.getBoundingClientRect();
             const percent = (e.clientX - rect.left) / rect.width;
-            state.currentTime = percent * state.duration;
-            
-            const progressPercent = (state.currentTime / state.duration) * 100;
-            progress.style.width = `${progressPercent}%`;
-            
-            currentTime.textContent = formatTime(state.currentTime);
-        }
-
-        // 工具函数：将时间字符串转换为秒数
-        function parseTimeToSeconds(timeStr) {
-            const parts = timeStr.split(':');
-            return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+            state.audioElement.currentTime = percent * state.duration;
         }
 
         // 工具函数：将秒数格式化为时间字符串
