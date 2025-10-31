@@ -130,6 +130,100 @@
             margin: 0 auto;
         }
 
+        /* 镜像选择器 */
+        .mirror-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .mirror-selector label {
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .mirror-selector select {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            min-width: 200px;
+            transition: all 0.3s;
+        }
+
+        .mirror-selector select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(74, 108, 247, 0.2);
+        }
+
+        .mirror-selector select:hover {
+            border-color: var(--primary-color);
+        }
+
+        .mirror-info {
+            margin-left: auto;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .mirror-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #10b981;
+        }
+
+        .status-dot.loading {
+            background-color: #f59e0b;
+            animation: pulse 1.5s infinite;
+        }
+
+        .status-dot.error {
+            background-color: #ef4444;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .test-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .test-button:hover {
+            background-color: #3a5bd9;
+        }
+
+        .test-button:disabled {
+            background-color: #64748b;
+            cursor: not-allowed;
+        }
+
         /* 音乐库布局 */
         .music-library {
             display: flex;
@@ -427,25 +521,6 @@
             border: none;
         }
 
-        /* 镜像选择器 */
-        .mirror-selector {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            padding: 10px;
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-        }
-
-        .mirror-selector select {
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            padding: 5px 10px;
-        }
-
         /* 页脚 */
         footer {
             background-color: var(--card-bg);
@@ -562,6 +637,18 @@
             .footer-links {
                 flex-direction: column;
             }
+            
+            .mirror-selector {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .mirror-info {
+                margin-left: 0;
+                width: 100%;
+                justify-content: space-between;
+            }
         }
     </style>
 </head>
@@ -605,12 +692,21 @@
     <!-- 音乐库内容 -->
     <div class="container">
         <div class="mirror-selector">
-            <span>选择镜像站点:</span>
+            <label for="mirrorSelect">选择镜像站点:</label>
             <select id="mirrorSelect">
                 <option value="default">默认站点</option>
-                <option value="mirror1">镜像站点 1</option>
-                <option value="mirror2">镜像站点 2</option>
+                <option value="jsdelivr">jsDelivr CDN</option>
+                <option value="githack">GitHack CDN</option>
+                <option value="statically">Statically CDN</option>
+                <option value="cloudflare">Cloudflare Pages</option>
             </select>
+            <div class="mirror-info">
+                <span class="mirror-status">
+                    <span class="status-dot" id="statusDot"></span>
+                    <span id="statusText">就绪</span>
+                </span>
+                <button class="test-button" id="testMirrorBtn" title="测试当前镜像站">测试</button>
+            </div>
         </div>
         
         <div class="music-library">
@@ -785,13 +881,21 @@
                     name: '默认站点',
                     baseUrl: '/music/'
                 },
-                mirror1: {
-                    name: '镜像站点 1',
-                    baseUrl: 'https://cdn1.example.com/music/'
+                jsdelivr: {
+                    name: 'jsDelivr CDN',
+                    baseUrl: 'https://cdn.jsdelivr.net/gh/Macrohard0001-m01/Macrohard0001-m01.github.io/music/'
                 },
-                mirror2: {
-                    name: '镜像站点 2',
-                    baseUrl: 'https://cdn2.example.com/music/'
+                githack: {
+                    name: 'GitHack CDN',
+                    baseUrl: 'https://raw.githack.com/Macrohard0001-m01/Macrohard0001-m01.github.io/main/music/'
+                },
+                statically: {
+                    name: 'Statically CDN',
+                    baseUrl: 'https://cdn.statically.io/gh/Macrohard0001-m01/Macrohard0001-m01.github.io/main/music/'
+                },
+                cloudflare: {
+                    name: 'Cloudflare Pages',
+                    baseUrl: 'https://macrohard0001-m01.pages.dev/music/'
                 }
             }
         };
@@ -837,6 +941,9 @@
         const volumeIcon = document.getElementById('volumeIcon');
         const volumeSlider = document.getElementById('volumeSlider');
         const mirrorSelect = document.getElementById('mirrorSelect');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const testMirrorBtn = document.getElementById('testMirrorBtn');
 
         // 初始化
         async function init() {
@@ -870,9 +977,11 @@
             progressBar.addEventListener('click', seek);
             volumeSlider.addEventListener('input', updateVolume);
             mirrorSelect.addEventListener('change', changeMirror);
+            testMirrorBtn.addEventListener('click', testCurrentMirror);
             
-            // 加载保存的播放列表
+            // 加载保存的设置
             loadSavedPlaylist();
+            loadMirrorPreference();
         }
 
         // 加载曲库数据
@@ -918,14 +1027,104 @@
         }
 
         // 更改镜像站点
-        function changeMirror() {
-            state.currentMirror = mirrorSelect.value;
+        async function changeMirror() {
+            const newMirror = mirrorSelect.value;
             
-            // 如果当前正在播放歌曲，重新加载当前歌曲
-            if (state.currentSong) {
-                const currentSongId = state.currentSong.id;
-                playSong(currentSongId);
+            // 更新状态
+            updateMirrorStatus('loading', '切换中...');
+            testMirrorBtn.disabled = true;
+            
+            try {
+                // 测试新镜像站
+                await testMirror(newMirror);
+                
+                state.currentMirror = newMirror;
+                updateMirrorStatus('ready', '就绪');
+                
+                // 保存用户选择
+                localStorage.setItem('preferredMirror', newMirror);
+                
+                // 如果当前正在播放歌曲，重新加载当前歌曲
+                if (state.currentSong) {
+                    const currentSongId = state.currentSong.id;
+                    playSong(currentSongId);
+                }
+                
+                alert(`已切换到 ${CONFIG.mirrors[newMirror].name}`);
+            } catch (error) {
+                console.error('切换镜像站失败:', error);
+                updateMirrorStatus('error', '连接失败');
+                
+                // 恢复原来的选择
+                mirrorSelect.value = state.currentMirror;
+                alert(`切换到 ${CONFIG.mirrors[newMirror].name} 失败，请检查网络或选择其他镜像站`);
+            } finally {
+                testMirrorBtn.disabled = false;
             }
+        }
+
+        // 测试当前镜像站
+        async function testCurrentMirror() {
+            const mirror = mirrorSelect.value;
+            await testMirror(mirror);
+        }
+
+        // 测试镜像站连接
+        async function testMirror(mirrorId) {
+            updateMirrorStatus('loading', '测试中...');
+            testMirrorBtn.disabled = true;
+            
+            try {
+                const mirror = CONFIG.mirrors[mirrorId];
+                
+                // 使用第一个歌曲进行测试
+                const testSongUrl = mirror.baseUrl + '001/Nanana.mp3';
+                
+                // 创建测试请求
+                const response = await fetch(testSongUrl, { method: 'HEAD' });
+                
+                if (response.ok) {
+                    updateMirrorStatus('ready', '连接正常');
+                    return true;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                updateMirrorStatus('error', '连接失败');
+                throw error;
+            } finally {
+                testMirrorBtn.disabled = false;
+            }
+        }
+
+        // 更新镜像站状态显示
+        function updateMirrorStatus(status, text) {
+            statusDot.className = 'status-dot';
+            statusText.textContent = text;
+            
+            switch(status) {
+                case 'loading':
+                    statusDot.classList.add('loading');
+                    break;
+                case 'ready':
+                    statusDot.style.backgroundColor = '#10b981';
+                    break;
+                case 'error':
+                    statusDot.classList.add('error');
+                    break;
+            }
+        }
+
+        // 加载用户偏好的镜像站
+        function loadMirrorPreference() {
+            const savedMirror = localStorage.getItem('preferredMirror');
+            if (savedMirror && CONFIG.mirrors[savedMirror]) {
+                mirrorSelect.value = savedMirror;
+                state.currentMirror = savedMirror;
+            }
+            
+            // 初始测试
+            testMirror(state.currentMirror);
         }
 
         // 获取歌曲的完整URL（根据当前镜像站点）
