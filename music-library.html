@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>在线曲库 - Macrohard Studio</title>
+    <link rel="icon" href="https://github.com/Macrohard0001-m01/Macrohard0001-m01.github.io/blob/main/images/macrohard_icon_music.png?raw=true" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -62,6 +63,11 @@
             height: 40px;
             margin-right: 10px;
             border-radius: 8px;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
         }
 
         .nav-links {
@@ -363,6 +369,57 @@
             font-size: 1.5rem;
         }
 
+        /* 音量控制 */
+        .volume-control {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .volume-slider-container {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--card-bg);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 10;
+        }
+
+        .volume-control:hover .volume-slider-container {
+            display: block;
+        }
+
+        .volume-slider {
+            width: 100px;
+            height: 5px;
+            -webkit-appearance: none;
+            background: var(--border-color);
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            border: none;
+        }
+
         /* 页脚 */
         footer {
             background-color: var(--card-bg);
@@ -488,7 +545,9 @@
         <div class="container">
             <nav class="navbar">
                 <div class="logo">
-                    <img src="images/macrohard_icon_music.png" alt="Logo" class="logo-icon">
+                    <div class="logo-icon">
+                        <i class="fas fa-music"></i>
+                    </div>
                     <span>Macrohard Music</span>
                 </div>
                 <ul class="nav-links">
@@ -611,9 +670,14 @@
                 <button class="control-btn" title="下一首" id="nextBtn">
                     <i class="fas fa-step-forward"></i>
                 </button>
-                <button class="control-btn" title="音量" id="volumeBtn">
-                    <i class="fas fa-volume-up"></i>
-                </button>
+                <div class="volume-control">
+                    <button class="control-btn" title="音量" id="volumeBtn">
+                        <i class="fas fa-volume-up" id="volumeIcon"></i>
+                    </button>
+                    <div class="volume-slider-container">
+                        <input type="range" min="0" max="100" value="100" class="volume-slider" id="volumeSlider">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -624,7 +688,9 @@
             <div class="footer-content">
                 <div class="footer-column">
                     <div class="footer-logo">
-                        <img src="images/macrohard_icon.png" alt="Logo" class="footer-logo-icon">
+                        <div class="footer-logo-icon">
+                            <i class="fas fa-music"></i>
+                        </div>
                         Macrohard Studio
                     </div>
                     <p>高中生的小站</p>
@@ -721,6 +787,7 @@
             playlist: [],
             currentTime: 0,
             duration: 0,
+            volume: 1,
             audioElement: null
         };
 
@@ -745,6 +812,9 @@
         const clearPlaylistBtn = document.getElementById('clearPlaylist');
         const savePlaylistBtn = document.getElementById('savePlaylist');
         const refreshFoldersBtn = document.getElementById('refreshFolders');
+        const volumeBtn = document.getElementById('volumeBtn');
+        const volumeIcon = document.getElementById('volumeIcon');
+        const volumeSlider = document.getElementById('volumeSlider');
 
         // 初始化
         function init() {
@@ -765,6 +835,10 @@
             savePlaylistBtn.addEventListener('click', savePlaylist);
             refreshFoldersBtn.addEventListener('click', refreshMusicData);
             progressBar.addEventListener('click', seek);
+            volumeSlider.addEventListener('input', updateVolume);
+            
+            // 加载保存的播放列表
+            loadSavedPlaylist();
         }
 
         // 刷新音乐数据
@@ -904,6 +978,7 @@
             
             // 设置音频源
             state.audioElement.src = song.url;
+            state.audioElement.volume = state.volume;
             state.audioElement.play().catch(error => {
                 console.error('播放失败:', error);
                 alert('播放失败，请检查音乐文件路径或网络连接');
@@ -1084,6 +1159,21 @@
             alert('播放列表已保存到本地存储');
         }
 
+        // 加载保存的播放列表
+        function loadSavedPlaylist() {
+            const savedPlaylist = localStorage.getItem('savedPlaylist');
+            if (savedPlaylist) {
+                try {
+                    const playlistData = JSON.parse(savedPlaylist);
+                    state.playlist = playlistData.songs;
+                    renderPlaylist();
+                    updatePlaylistCount();
+                } catch (e) {
+                    console.error('加载播放列表失败:', e);
+                }
+            }
+        }
+
         // 跳转进度
         function seek(e) {
             if (!state.currentSong || !state.audioElement) return;
@@ -1091,6 +1181,21 @@
             const rect = progressBar.getBoundingClientRect();
             const percent = (e.clientX - rect.left) / rect.width;
             state.audioElement.currentTime = percent * state.duration;
+        }
+
+        // 更新音量
+        function updateVolume() {
+            state.volume = volumeSlider.value / 100;
+            state.audioElement.volume = state.volume;
+            
+            // 更新音量图标
+            if (state.volume === 0) {
+                volumeIcon.className = 'fas fa-volume-mute';
+            } else if (state.volume < 0.5) {
+                volumeIcon.className = 'fas fa-volume-down';
+            } else {
+                volumeIcon.className = 'fas fa-volume-up';
+            }
         }
 
         // 工具函数：将秒数格式化为时间字符串
