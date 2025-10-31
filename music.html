@@ -13,8 +13,8 @@
         <div class="container">
             <nav class="navbar">
                 <div class="logo">
-                    <i class="fas fa-code"></i>
-                    <span>Macrohard Studios</span>
+                    <img src="images/macrohard_icon.png" alt="Logo" class="logo-icon">
+                    <span>Macrohard Studio</span>
                 </div>
                 <ul class="nav-links">
                     <li><a href="index.html">首页</a></li>
@@ -28,8 +28,13 @@
                     <li><a href="sentiment.html">情怀与初衷</a></li>
                     <li><a href="about.html">关于</a></li>
                 </ul>
-                <div class="hamburger">
-                    <i class="fas fa-bars"></i>
+                <div class="nav-right">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="hamburger">
+                        <i class="fas fa-bars"></i>
+                    </div>
                 </div>
             </nav>
         </div>
@@ -39,7 +44,7 @@
     <section class="hero">
         <div class="container">
             <h1>音乐</h1>
-            <p>音乐相关的服务</p>
+            <p>享受音乐，感受生活</p>
         </div>
     </section>
 
@@ -47,52 +52,47 @@
     <section class="music">
         <div class="container">
             <div class="section-title">
-                <h2>相关内容</h2>
+                <h2>音乐服务</h2>
+                <p>提供多样化的音乐体验</p>
             </div>
             <div class="music-grid">
                 <div class="music-card">
-                    <div class="music-image">
-                        <img src="https://docs.lxmusic.top/logo.svg" alt="LX Music Sources">
+                    <div class="music-icon">
+                        <i class="fas fa-music"></i>
                     </div>
                     <div class="music-info">
                         <h3>洛雪音源</h3>
                         <p>lx-music音源下载服务（全网搜集的音源，且用且珍惜）</p>
-                        <div class="music-player">
-                            <span>共？项</span>
-                            <button class="play-btn">
-                                <i class="fas fa-play"></i>
-                            </button>
+                        <div class="music-stats">
+                            <span>共15项音源</span>
                         </div>
+                        <a href="https://docs.lxmusic.top/" target="_blank" class="btn">访问服务</a>
                     </div>
                 </div>
                 <div class="music-card">
-                    <div class="music-image">
-                        <img src="" alt="啥都没有">
+                    <div class="music-icon">
+                        <i class="fas fa-headphones-alt"></i>
                     </div>
                     <div class="music-info">
                         <h3>在线听歌</h3>
                         <p>个人网站的曲库，有啥听啥（😏）【侵删！】</p>
-                        <div class="music-player">
-                            <span>共？项</span>
-                            <button class="play-btn">
-                                <i class="fas fa-play"></i>
-                            </button>
+                        <div class="music-stats">
+                            <span>共128首歌曲</span>
                         </div>
+                        <a href="#" class="btn">进入曲库</a>
                     </div>
                 </div>
                 <div class="music-card">
-                    <div class="music-image">
-                        <img src="" alt="预留">
+                    <div class="music-icon">
+                        <i class="fas fa-compact-disc"></i>
                     </div>
                     <div class="music-info">
-                        <h3>预留</h3>
-                        <p>也许会开发音乐相关软件</p>
-                        <div class="music-player">
-                            <span>yee~</span>
-                            <button class="arrow">
-                                <i class="fas fa-play"></i>
-                            </button>
+                        <h3>音乐软件</h3>
+                        <p>也许会开发音乐相关软件，敬请期待</p>
+                        <div class="music-stats">
+                            <span>开发中</span>
                         </div>
+                        <a href="#" class="btn">了解更多</a>
                     </div>
                 </div>
             </div>
@@ -105,20 +105,20 @@
             <div class="footer-content">
                 <div class="footer-column">
                     <div class="footer-logo">
-                        <i class="fas fa-code"></i>
+                        <img src="images/macrohard_icon.png" alt="Logo" class="footer-logo-icon">
                         Macrohard Studio
                     </div>
-                    <p>Macrohard_Studio</p>
+                    <p>高中生的小站</p>
                 </div>
                 
                 <div class="footer-links">
                     <div class="footer-column">
                         <h3>快速链接</h3>
                         <ul>
-                            <li><a href="index.html">首页</a></li>
-                            <li><a href="software.html">软件</a></li>
-                            <li><a href="music.html">音乐</a></li>
-                            <li><a href="sentiment.html">情怀</a></li>
+                            <li><a href="https://github.com/Macrohard0001-m01">个人主页</a></li>
+                            <li><a href="https://github.com/Macrohard0001-m01" target="_blank">GitHub</a></li>
+                            <li><a href="https://chat.deepseek.com/" target="_blank">DeepSeek</a></li>
+                            <li><a href="https://docs.lxmusic.top/" target="_blank">LX Music</a></li>
                         </ul>
                     </div>
                     
@@ -127,8 +127,8 @@
                         <ul>
                             <li><a href="software.html">AORE</a></li>
                             <li><a href="software.html">RCP3</a></li>
-                            <li><a href="software.html">预留</a></li>
-                            <li><a href="music.html">音乐</a></li>
+                            <li><a href="#">预留</a></li>
+                            <li><a href="">预留</a></li>
                         </ul>
                     </div>
                     
@@ -144,7 +144,7 @@
             </div>
             
             <div class="copyright">
-                <p>&copy; 2025-2026 Macrohard Studios. 保留所有权利。 | 网站正在编写与测试，勿喷，勿催</p>
+                <p>&copy; 2025-2026 Macrohard Studio. 保留所有权利。 | 网站正在编写与测试，勿喷，勿催</p>
             </div>
         </div>
     </footer>
