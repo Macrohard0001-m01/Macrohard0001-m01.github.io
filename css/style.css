@@ -72,23 +72,19 @@ header {
     width: 32px;
     height: 32px;
     margin-right: 10px;
-    transition: opacity 0.3s;
+    transition: filter 0.3s;
 }
 
-.logo-icon.day {
-    display: block;
+.footer-logo-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
 }
 
-.logo-icon.night {
-    display: none;
-}
-
-[data-theme="dark"] .logo-icon.day {
-    display: none;
-}
-
-[data-theme="dark"] .logo-icon.night {
-    display: block;
+/* 深色模式下的图标调整 */
+[data-theme="dark"] .logo-icon,
+[data-theme="dark"] .footer-logo-icon {
+    filter: brightness(0.9);
 }
 
 .nav-links {
@@ -452,6 +448,8 @@ footer {
     font-size: 1.8rem;
     font-weight: 700;
     margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
 }
 
 .footer-links {
