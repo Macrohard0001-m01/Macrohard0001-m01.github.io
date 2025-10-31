@@ -736,18 +736,47 @@
                 // 这里提供两种方案：
                 
                 // 方案1: 使用预定义的目录结构（适用于GitHub Pages）
-                // 你需要在 /music/ 目录下创建对应的文件夹和音乐文件
+                // 从lx_list_005.txt文件中提取的歌曲信息
                 const mockFolders = [
-                    { id: '001', name: "20251031更新上架", count:  },
+                    { id: '001', name: "20251031更新上架", count: 33 },
                     { id: '002', name: "其他音乐", count: 0 },
                 ];
-
+                
                 const mockSongs = [
-                    { id: 1, folderId: 'pop', title: "夜曲", artist: "周杰伦", duration: "3:45", url: "/music/pop/song1.mp3" },
-                    { id: 2, folderId: 'pop', title: "七里香", artist: "周杰伦", duration: "4:02", url: "/music/pop/song2.mp3" },
-                    { id: 3, folderId: 'classical', title: "月光奏鸣曲", artist: "贝多芬", duration: "5:15", url: "/music/classical/song1.mp3" },
-                    { id: 4, folderId: 'electronic', title: "Faded", artist: "Alan Walker", duration: "3:32", url: "/music/electronic/song1.mp3" },
-                    { id: 5, folderId: 'rock', title: "Sweet Child O' Mine", artist: "Guns N' Roses", duration: "5:56", url: "/music/rock/song1.mp3" }
+                    { id: 1, folderId: '001', title: "(It Goes Like) Nanana (Edit)", artist: "Peggy Gou", duration: "3:25", url: "/music/001/(It Goes Like) Nanana (Edit).flac" },
+                    { id: 2, folderId: '001', title: "Padam Padam (Single Version)", artist: "Kylie Minogue", duration: "2:46", url: "/music/001/Padam Padam (Single Version).flac" },
+                    { id: 3, folderId: '001', title: "DNA (Loving You) [feat. Hannah Boleyn]", artist: "Billy Gillies、Hannah Boleyn", duration: "3:15", url: "/music/001/DNA (Loving You) [feat. Hannah Boleyn].flac" },
+                    { id: 4, folderId: '001', title: "Ignite", artist: "K-391、Alan Walker、Julie Bergan、胜利", duration: "3:30", url: "/music/001/Ignite.flac" },
+                    { id: 5, folderId: '001', title: "Do It Like That", artist: "TOMORROW X TOGETHER、Jonas Brothers、Alan Walker", duration: "2:59", url: "/music/001/Do It Like That.flac" },
+                    { id: 6, folderId: '001', title: "Wasted", artist: "Tiësto、Matthew Koma", duration: "3:10", url: "/music/001/Wasted.flac" },
+                    { id: 7, folderId: '001', title: "The Motto", artist: "Tiësto、Ava Max", duration: "2:44", url: "/music/001/The Motto.flac" },
+                    { id: 8, folderId: '001', title: "Tantalizing", artist: "Tiësto、Soaky Siren", duration: "2:48", url: "/music/001/Tantalizing.flac" },
+                    { id: 9, folderId: '001', title: "Hot Honey", artist: "Tiësto、Alana Springsteen", duration: "2:53", url: "/music/001/Hot Honey.flac" },
+                    { id: 10, folderId: '001', title: "Undecided (Explicit)", artist: "Chris Brown", duration: "3:27", url: "/music/001/Undecided (Explicit).flac" },
+                    { id: 11, folderId: '001', title: "You Got Me", artist: "Justin Caruso、Tiësto", duration: "3:12", url: "/music/001/You Got Me.flac" },
+                    { id: 12, folderId: '001', title: "BOOM", artist: "Tiësto、Sevenn", duration: "2:50", url: "/music/001/BOOM.flac" },
+                    { id: 13, folderId: '001', title: "We Don't Talk Anymore", artist: "Charlie Puth、Selena Gomez", duration: "3:37", url: "/music/001/We Don't Talk Anymore.flac" },
+                    { id: 14, folderId: '001', title: "Seasons", artist: "Rival、Cadmium、Harley Bird", duration: "3:45", url: "/music/001/Seasons.flac" },
+                    { id: 15, folderId: '001', title: "ペンパイナッポーアッポーペン(PPAP) (Pen-Pineapple-Apple-Pen)", artist: "PIKO太郎", duration: "0:45", url: "/music/001/PPAP.flac" },
+                    { id: 16, folderId: '001', title: "Never Going Home Tonight (feat. Madison Love)", artist: "David Guetta、Alesso、Madison Love", duration: "2:58", url: "/music/001/Never Going Home Tonight (feat. Madison Love).flac" },
+                    { id: 17, folderId: '001', title: "Sorry", artist: "Justin Bieber", duration: "3:20", url: "/music/001/Sorry.flac" },
+                    { id: 18, folderId: '001', title: "Mmm Yeah", artist: "Austin Mahone、Pitbull", duration: "3:47", url: "/music/001/Mmm Yeah.flac" },
+                    { id: 19, folderId: '001', title: "Cruel Summer", artist: "Taylor Swift", duration: "2:58", url: "/music/001/Cruel Summer.flac" },
+                    { id: 20, folderId: '001', title: "Señorita", artist: "Shawn Mendes、Camila Cabello", duration: "3:10", url: "/music/001/Señorita.flac" },
+                    { id: 21, folderId: '001', title: "Shake It Off", artist: "Taylor Swift", duration: "3:39", url: "/music/001/Shake It Off.flac" },
+                    { id: 22, folderId: '001', title: "JOYRIDE (Explicit)", artist: "Kesha", duration: "3:04", url: "/music/001/JOYRIDE (Explicit).flac" },
+                    { id: 23, folderId: '001', title: "Call Me Maybe", artist: "Carly Rae Jepsen", duration: "3:13", url: "/music/001/Call Me Maybe.flac" },
+                    { id: 24, folderId: '001', title: "I Don't Wanna Wait", artist: "David Guetta、OneRepublic", duration: "2:52", url: "/music/001/I Don't Wanna Wait.flac" },
+                    { id: 25, folderId: '001', title: "Moonshine", artist: "Alan Walker、Elley Duhè", duration: "3:08", url: "/music/001/Moonshine.flac" },
+                    { id: 26, folderId: '001', title: "念诗之王", artist: "小可儿", duration: "1:50", url: "/music/001/念诗之王.flac" },
+                    { id: 27, folderId: '001', title: "Eye of the Tiger", artist: "Survivor", duration: "4:05", url: "/music/001/Eye of the Tiger.flac" },
+                    { id: 28, folderId: '001', title: "Coming Home", artist: "Tiësto、Mesto", duration: "3:15", url: "/music/001/Coming Home.flac" },
+                    { id: 29, folderId: '001', title: "Colors (Vicetone Remix)", artist: "Vicetone、Hardwell、Tiësto、Andreas Moe", duration: "3:22", url: "/music/001/Colors (Vicetone Remix).flac" },
+                    { id: 30, folderId: '001', title: "No Mercy", artist: "MOTi", duration: "2:50", url: "/music/001/No Mercy.flac" },
+                    { id: 31, folderId: '001', title: "Red Lights (Extended Version)", artist: "Tiësto", duration: "5:12", url: "/music/001/Red Lights (Extended Version).flac" },
+                    { id: 32, folderId: '001', title: "Tear It Down (From Hotel Transylvania 3)", artist: "Tiësto", duration: "3:08", url: "/music/001/Tear It Down (From Hotel Transylvania 3).flac" },
+                    { id: 33, folderId: '001', title: "Stay", artist: "MOTi、Alida", duration: "3:05", url: "/music/001/Stay.flac" },
+                    { id: 34, folderId: '001', title: "Feels Like You", artist: "MOTi、Robert Falcon", duration: "2:58", url: "/music/001/Feels Like You.flac" }
                 ];
 
                 state.musicData.folders = mockFolders;
