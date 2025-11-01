@@ -27,6 +27,7 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
         .container {
@@ -128,6 +129,46 @@
             font-size: 1.2rem;
             max-width: 600px;
             margin: 0 auto;
+        }
+
+        /* 错误提示样式 */
+        .error-message {
+            background-color: rgba(220, 38, 38, 0.1);
+            color: #fca5a5;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .error-message.show {
+            display: flex;
+        }
+        
+        .error-icon {
+            font-size: 1.2rem;
+        }
+        
+        .error-content {
+            flex: 1;
+        }
+        
+        .retry-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+        
+        .retry-button:hover {
+            background-color: #3a5bd9;
         }
 
         /* 镜像选择器 */
@@ -823,6 +864,15 @@
 
     <!-- 音乐库内容 -->
     <div class="container">
+        <!-- 错误提示区域 -->
+        <div class="error-message" id="errorMessage">
+            <i class="fas fa-exclamation-triangle error-icon"></i>
+            <div class="error-content">
+                <strong>播放错误:</strong> <span id="errorText"></span>
+            </div>
+            <button class="retry-button" id="retryButton">重试</button>
+        </div>
+        
         <div class="mirror-selector">
             <label for="mirrorSelect">选择镜像站点:</label>
             <select id="mirrorSelect">
@@ -1070,7 +1120,9 @@
             musicLibrary: null,
             currentPlaylistId: null,
             currentMirror: 'default',
-            speedTestInProgress: false
+            speedTestInProgress: false,
+            userInteracted: false, // 新增：记录用户是否已与页面交互
+            lastPlayAttempt: null // 新增：记录上次播放尝试
         };
 
         // DOM 元素
@@ -1106,9 +1158,15 @@
         const speedTestResults = document.getElementById('speedTestResults');
         const speedTestResultsBody = document.getElementById('speedTestResultsBody');
         const speedTestClose = document.getElementById('speedTestClose');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        const retryButton = document.getElementById('retryButton');
 
         // 初始化
         async function init() {
+            // 添加用户交互检测
+            document.addEventListener('click', handleUserInteraction, { once: true });
+            
             // 从URL参数获取播放清单ID
             const urlParams = new URLSearchParams(window.location.search);
             const playlistId = urlParams.get('playlist');
@@ -1142,10 +1200,36 @@
             testMirrorBtn.addEventListener('click', testCurrentMirror);
             speedTestBtn.addEventListener('click', startSpeedTest);
             speedTestClose.addEventListener('click', closeSpeedTestResults);
+            retryButton.addEventListener('click', retryPlayback);
             
             // 加载保存的设置
             loadSavedPlaylist();
             loadMirrorPreference();
+        }
+
+        // 处理用户交互
+        function handleUserInteraction() {
+            state.userInteracted = true;
+            console.log('用户已与页面交互，允许自动播放');
+        }
+
+        // 显示错误信息
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.classList.add('show');
+        }
+
+        // 隐藏错误信息
+        function hideError() {
+            errorMessage.classList.remove('show');
+        }
+
+        // 重试播放
+        function retryPlayback() {
+            hideError();
+            if (state.currentSong) {
+                playSong(state.currentSong.id);
+            }
         }
 
         // 加载曲库数据
@@ -1509,7 +1593,7 @@
             }
         }
 
-        // 设置音频事件
+        // 设置音频事件 - 增强版
         function setupAudioEvents() {
             state.audioElement.addEventListener('loadedmetadata', () => {
                 state.duration = state.audioElement.duration;
@@ -1527,7 +1611,21 @@
                 playNext();
             });
 
-            // 添加错误处理
+            state.audioElement.addEventListener('canplaythrough', () => {
+                console.log('音频可以流畅播放');
+                hideError();
+            });
+
+            state.audioElement.addEventListener('waiting', () => {
+                console.log('音频等待加载更多数据');
+            });
+
+            state.audioElement.addEventListener('stalled', () => {
+                console.log('音频数据加载停滞');
+                showError('音频加载停滞，请检查网络连接');
+            });
+
+            // 增强错误处理
             state.audioElement.addEventListener('error', (e) => {
                 console.error('音频加载错误:', e);
                 const error = state.audioElement.error;
@@ -1542,7 +1640,7 @@
                             errorMsg = '网络错误，请检查网络连接或尝试切换镜像站';
                             break;
                         case error.MEDIA_ERR_DECODE:
-                            errorMsg = '音频解码错误';
+                            errorMsg = '音频解码错误，文件可能已损坏';
                             break;
                         case error.MEDIA_ERR_SRC_NOT_SUPPORTED:
                             errorMsg = '音频格式不被支持或URL错误';
@@ -1550,7 +1648,7 @@
                     }
                 }
                 
-                alert(errorMsg);
+                showError(errorMsg);
                 state.isPlaying = false;
                 playPauseIcon.className = 'fas fa-play';
             });
@@ -1652,46 +1750,71 @@
             });
         }
 
-        // 播放歌曲 - 修复带括号歌曲的播放问题
+        // 播放歌曲 - 修复版
         function playSong(songId) {
             const song = state.musicLibrary.songs.find(s => s.id === songId);
             if (!song) return;
             
+            // 防止重复播放请求
+            if (state.lastPlayAttempt === songId && state.audioElement.src) {
+                console.log('防止重复播放请求:', songId);
+                return;
+            }
+            
+            state.lastPlayAttempt = songId;
             state.currentSong = song;
-            state.isPlaying = true;
             
-            // 设置音频源（使用当前镜像站点）- 修复URL编码问题
+            // 设置音频源（使用当前镜像站点）
             const songUrl = getSongUrl(song.url);
-            console.log('尝试播放:', songUrl); // 调试信息
+            console.log('尝试播放:', songUrl);
             
+            // 先暂停当前播放
+            if (state.audioElement) {
+                state.audioElement.pause();
+                state.audioElement.currentTime = 0;
+            }
+            
+            // 设置新的音频源
             state.audioElement.src = songUrl;
             state.audioElement.volume = state.volume;
             
-            state.audioElement.play().catch(error => {
-                console.error('播放失败:', error);
-                
-                // 如果播放失败，尝试使用未编码的URL（某些服务器可能不需要编码）
-                const fallbackUrl = CONFIG.mirrors[state.currentMirror].baseUrl + song.url;
-                console.log('尝试备用URL:', fallbackUrl);
-                
-                state.audioElement.src = fallbackUrl;
-                state.audioElement.play().catch(fallbackError => {
-                    console.error('备用URL也失败:', fallbackError);
-                    alert('播放失败，请检查音乐文件路径或网络连接。错误: ' + fallbackError.message);
-                });
-            });
-            
+            // 更新UI
             currentSongTitle.textContent = song.title;
             currentSongArtist.textContent = song.artist;
-            playPauseIcon.className = 'fas fa-pause';
             
-            // 更新UI
             document.querySelectorAll('.song-item').forEach(item => item.classList.remove('playing'));
             document.querySelectorAll('.song-item').forEach(item => {
                 if (parseInt(item.querySelector('.play-song').getAttribute('data-id')) === songId) {
                     item.classList.add('playing');
                 }
             });
+            
+            // 等待音频加载完成后再尝试播放
+            state.audioElement.load();
+            
+            const playPromise = state.audioElement.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    // 播放成功
+                    state.isPlaying = true;
+                    playPauseIcon.className = 'fas fa-pause';
+                    hideError();
+                }).catch(error => {
+                    console.error('播放失败:', error);
+                    
+                    if (error.name === 'NotAllowedError') {
+                        showError('浏览器阻止了自动播放，请点击播放按钮手动开始播放');
+                    } else if (error.name === 'AbortError') {
+                        showError('播放请求被中止，请检查网络连接');
+                    } else {
+                        showError('播放失败: ' + error.message);
+                    }
+                    
+                    state.isPlaying = false;
+                    playPauseIcon.className = 'fas fa-play';
+                });
+            }
         }
 
         // 添加到播放列表
@@ -1756,9 +1879,10 @@
             playlistCount.textContent = state.playlist.length;
         }
 
-        // 播放/暂停切换
+        // 播放/暂停切换 - 修复版
         function togglePlayPause() {
             if (!state.currentSong) {
+                // 如果没有当前歌曲，尝试播放第一首可用的歌曲
                 if (state.playlist.length > 0) {
                     playSong(state.playlist[0].id);
                 } else if (state.musicLibrary.songs.length > 0) {
@@ -1770,11 +1894,23 @@
             if (state.isPlaying) {
                 state.audioElement.pause();
                 playPauseIcon.className = 'fas fa-play';
+                state.isPlaying = false;
             } else {
-                state.audioElement.play();
-                playPauseIcon.className = 'fas fa-pause';
+                const playPromise = state.audioElement.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        state.isPlaying = true;
+                        playPauseIcon.className = 'fas fa-pause';
+                        hideError();
+                    }).catch(error => {
+                        console.error('播放失败:', error);
+                        showError('播放失败: ' + error.message);
+                        state.isPlaying = false;
+                        playPauseIcon.className = 'fas fa-play';
+                    });
+                }
             }
-            state.isPlaying = !state.isPlaying;
         }
 
         // 播放上一首
