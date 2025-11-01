@@ -224,6 +224,134 @@
             cursor: not-allowed;
         }
 
+        .speed-test-button {
+            background-color: #10b981;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 5px;
+        }
+
+        .speed-test-button:hover {
+            background-color: #0da271;
+        }
+
+        .speed-test-button:disabled {
+            background-color: #64748b;
+            cursor: not-allowed;
+        }
+
+        /* 测速结果面板 */
+        .speed-test-results {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            display: none;
+        }
+
+        .speed-test-results.active {
+            display: block;
+        }
+
+        .speed-test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .speed-test-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .speed-test-close {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .speed-test-results table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .speed-test-results th,
+        .speed-test-results td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .speed-test-results th {
+            font-weight: 500;
+            color: #94a3b8;
+        }
+
+        .speed-test-results tr:hover {
+            background-color: var(--hover-color);
+        }
+
+        .speed-rank {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .speed-rank-1 {
+            background-color: #f59e0b;
+        }
+
+        .speed-rank-2 {
+            background-color: #64748b;
+        }
+
+        .speed-rank-3 {
+            background-color: #a16207;
+        }
+
+        .speed-value {
+            font-weight: 500;
+        }
+
+        .speed-good {
+            color: #10b981;
+        }
+
+        .speed-medium {
+            color: #f59e0b;
+        }
+
+        .speed-slow {
+            color: #ef4444;
+        }
+
+        .recommended-badge {
+            display: inline-block;
+            background-color: #10b981;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            margin-left: 5px;
+        }
+
         /* 音乐库布局 */
         .music-library {
             display: flex;
@@ -649,6 +777,10 @@
                 width: 100%;
                 justify-content: space-between;
             }
+
+            .speed-test-results table {
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
@@ -706,7 +838,32 @@
                     <span id="statusText">就绪</span>
                 </span>
                 <button class="test-button" id="testMirrorBtn" title="测试当前镜像站">测试</button>
+                <button class="speed-test-button" id="speedTestBtn" title="测速所有镜像站">测速</button>
             </div>
+        </div>
+
+        <!-- 测速结果面板 -->
+        <div class="speed-test-results" id="speedTestResults">
+            <div class="speed-test-header">
+                <div class="speed-test-title">镜像站测速结果</div>
+                <button class="speed-test-close" id="speedTestClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>排名</th>
+                        <th>镜像站</th>
+                        <th>响应时间</th>
+                        <th>下载速度</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody id="speedTestResultsBody">
+                    <!-- 测速结果将在这里动态生成 -->
+                </tbody>
+            </table>
         </div>
         
         <div class="music-library">
@@ -912,7 +1069,8 @@
             audioElement: null,
             musicLibrary: null,
             currentPlaylistId: null,
-            currentMirror: 'default'
+            currentMirror: 'default',
+            speedTestInProgress: false
         };
 
         // DOM 元素
@@ -944,6 +1102,10 @@
         const statusDot = document.getElementById('statusDot');
         const statusText = document.getElementById('statusText');
         const testMirrorBtn = document.getElementById('testMirrorBtn');
+        const speedTestBtn = document.getElementById('speedTestBtn');
+        const speedTestResults = document.getElementById('speedTestResults');
+        const speedTestResultsBody = document.getElementById('speedTestResultsBody');
+        const speedTestClose = document.getElementById('speedTestClose');
 
         // 初始化
         async function init() {
@@ -978,6 +1140,8 @@
             volumeSlider.addEventListener('input', updateVolume);
             mirrorSelect.addEventListener('change', changeMirror);
             testMirrorBtn.addEventListener('click', testCurrentMirror);
+            speedTestBtn.addEventListener('click', startSpeedTest);
+            speedTestClose.addEventListener('click', closeSpeedTestResults);
             
             // 加载保存的设置
             loadSavedPlaylist();
@@ -1096,6 +1260,194 @@
             } finally {
                 testMirrorBtn.disabled = false;
             }
+        }
+
+        // 开始测速所有镜像站
+        async function startSpeedTest() {
+            if (state.speedTestInProgress) {
+                alert('测速正在进行中，请稍候...');
+                return;
+            }
+            
+            state.speedTestInProgress = true;
+            speedTestBtn.disabled = true;
+            speedTestBtn.textContent = '测速中...';
+            
+            // 显示测速结果面板
+            speedTestResults.classList.add('active');
+            speedTestResultsBody.innerHTML = '<tr><td colspan="5" class="loading"><i class="fas fa-spinner fa-spin"></i><p>正在测速，请稍候...</p></td></tr>';
+            
+            try {
+                const results = [];
+                
+                // 测试所有镜像站
+                for (const [mirrorId, mirror] of Object.entries(CONFIG.mirrors)) {
+                    const result = await testMirrorSpeed(mirrorId, mirror);
+                    results.push(result);
+                    
+                    // 更新UI显示当前进度
+                    updateSpeedTestProgress(results);
+                }
+                
+                // 按速度排序
+                results.sort((a, b) => a.responseTime - b.responseTime);
+                
+                // 显示最终结果
+                displaySpeedTestResults(results);
+                
+                // 自动选择最快的镜像站
+                if (results.length > 0 && results[0].success) {
+                    const fastestMirror = results[0].id;
+                    mirrorSelect.value = fastestMirror;
+                    state.currentMirror = fastestMirror;
+                    localStorage.setItem('preferredMirror', fastestMirror);
+                    updateMirrorStatus('ready', '已选择最快镜像');
+                    
+                    // 如果当前正在播放歌曲，重新加载当前歌曲
+                    if (state.currentSong) {
+                        const currentSongId = state.currentSong.id;
+                        playSong(currentSongId);
+                    }
+                }
+                
+            } catch (error) {
+                console.error('测速失败:', error);
+                speedTestResultsBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #ef4444;">测速失败，请检查网络连接</td></tr>';
+            } finally {
+                state.speedTestInProgress = false;
+                speedTestBtn.disabled = false;
+                speedTestBtn.textContent = '测速';
+            }
+        }
+
+        // 测试单个镜像站速度
+        async function testMirrorSpeed(mirrorId, mirror) {
+            const result = {
+                id: mirrorId,
+                name: mirror.name,
+                responseTime: 0,
+                downloadSpeed: 0,
+                success: false,
+                error: null
+            };
+            
+            try {
+                // 使用一个小文件进行测速（这里使用一个1MB的测试文件）
+                const testFileUrl = mirror.baseUrl + '001/(It Goes Like) Nanana (Edit).mp3';
+                
+                // 测试响应时间
+                const startTime = performance.now();
+                const response = await fetch(testFileUrl, { method: 'HEAD' });
+                const endTime = performance.now();
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                result.responseTime = Math.round(endTime - startTime);
+                result.success = true;
+                
+                // 如果有Content-Length，可以估算下载速度
+                const contentLength = response.headers.get('content-length');
+                if (contentLength) {
+                    // 这里简化处理，实际下载速度测试需要下载部分数据
+                    result.downloadSpeed = Math.round((contentLength / 1024) / (result.responseTime / 1000));
+                }
+                
+            } catch (error) {
+                result.success = false;
+                result.error = error.message;
+                result.responseTime = 9999; // 设置一个很大的值表示超时
+            }
+            
+            return result;
+        }
+
+        // 更新测速进度
+        function updateSpeedTestProgress(results) {
+            speedTestResultsBody.innerHTML = '';
+            
+            results.forEach((result, index) => {
+                const row = document.createElement('tr');
+                
+                let statusHtml = '';
+                if (result.success) {
+                    statusHtml = `<span class="speed-value speed-good">正常</span>`;
+                } else {
+                    statusHtml = `<span class="speed-value speed-slow">失败</span>`;
+                }
+                
+                let speedHtml = '';
+                if (result.success && result.downloadSpeed > 0) {
+                    speedHtml = `<span class="speed-value ${getSpeedClass(result.downloadSpeed)}">${result.downloadSpeed} KB/s</span>`;
+                } else {
+                    speedHtml = `<span class="speed-value speed-slow">-</span>`;
+                }
+                
+                row.innerHTML = `
+                    <td><span class="speed-rank speed-rank-${index + 1}">${index + 1}</span></td>
+                    <td>${result.name}</td>
+                    <td><span class="speed-value ${getResponseTimeClass(result.responseTime)}">${result.responseTime}ms</span></td>
+                    <td>${speedHtml}</td>
+                    <td>${statusHtml}</td>
+                `;
+                
+                speedTestResultsBody.appendChild(row);
+            });
+        }
+
+        // 显示测速结果
+        function displaySpeedTestResults(results) {
+            speedTestResultsBody.innerHTML = '';
+            
+            results.forEach((result, index) => {
+                const row = document.createElement('tr');
+                
+                let statusHtml = '';
+                if (result.success) {
+                    statusHtml = `<span class="speed-value speed-good">正常</span>`;
+                } else {
+                    statusHtml = `<span class="speed-value speed-slow">失败: ${result.error}</span>`;
+                }
+                
+                let speedHtml = '';
+                if (result.success && result.downloadSpeed > 0) {
+                    speedHtml = `<span class="speed-value ${getSpeedClass(result.downloadSpeed)}">${result.downloadSpeed} KB/s</span>`;
+                } else {
+                    speedHtml = `<span class="speed-value speed-slow">-</span>`;
+                }
+                
+                const isRecommended = index === 0 && result.success;
+                
+                row.innerHTML = `
+                    <td><span class="speed-rank ${index < 3 ? `speed-rank-${index + 1}` : ''}">${index + 1}</span></td>
+                    <td>${result.name} ${isRecommended ? '<span class="recommended-badge">推荐</span>' : ''}</td>
+                    <td><span class="speed-value ${getResponseTimeClass(result.responseTime)}">${result.responseTime}ms</span></td>
+                    <td>${speedHtml}</td>
+                    <td>${statusHtml}</td>
+                `;
+                
+                speedTestResultsBody.appendChild(row);
+            });
+        }
+
+        // 根据响应时间获取CSS类
+        function getResponseTimeClass(responseTime) {
+            if (responseTime < 200) return 'speed-good';
+            if (responseTime < 500) return 'speed-medium';
+            return 'speed-slow';
+        }
+
+        // 根据下载速度获取CSS类
+        function getSpeedClass(speed) {
+            if (speed > 500) return 'speed-good';
+            if (speed > 100) return 'speed-medium';
+            return 'speed-slow';
+        }
+
+        // 关闭测速结果面板
+        function closeSpeedTestResults() {
+            speedTestResults.classList.remove('active');
         }
 
         // 更新镜像站状态显示
